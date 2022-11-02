@@ -2,15 +2,66 @@ import java.util.Scanner;
 
 public class Main {
     private class Product{
+        private final String name;
+        private final float price;
+        private int stock;
 
+        public Product(String main, float price) {
+            this(main, price, 10);
+        }
+        public Product(String name, float price, int stock) {
+            this.name = name;
+            this.price = price;
+            this.stock = stock;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public float getPrice() {
+            return this.price;
+        }
+
+        public int getStock() {
+            return this.stock;
+        }
+
+        public boolean dispense() {
+            if (this.stock <= 0) {
+                System.out.printf("Sorry, %s is out of stock%n", this.getName());
+
+                return false;
+            }
+
+            this.stock--;
+
+            return true;
+        }
     }
-    private static final String[] products = new String[]{"water","sprite","cola","fanta","orange"};
-    private static final float[] prices = new float[]{1.0F,1.2F,1.3F,1.1F,1.5F};
-    private static final int[] stock = new int[]{10,10,10,10,10};
+    private final Product[] products = new Product[]{
+            new Product("water", 1.0F),
+            new Product("sprite", 1.2F),
+            new Product("cola", 1.3F),
+            new Product("fanta", 1.1F),
+            new Product("orange", 1.5F)
+    };
     private static float balance = 0;
 
     public static void main(String[] args)
     {
+        try
+        {
+            Main app = new Main();
+            app.run();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void run() {
         int selectedItem;
 
         do {
@@ -25,7 +76,7 @@ public class Main {
         System.out.printf("Amount to pay: £%.2f", balance);
     }
 
-    public static void showContents() {
+    public void showContents() {
         System.out.println("+---------------------------+");
         System.out.println("|      Vending Machine      |");
         System.out.println("+---------------------------+");
@@ -34,9 +85,9 @@ public class Main {
             System.out.printf(
                     "|   %s   %s £%.2f [%s]   |%n",
                     i+1,
-                    formatFixedLengthString(products[i], 6),
-                    prices[i],
-                    formatFixedLengthString(Integer.toString(stock[i]), 2)
+                    formatFixedLengthString(products[i].getName(), 6),
+                    products[i].getPrice(),
+                    formatFixedLengthString(Integer.toString(products[i].getStock()), 2)
             );
         }
         System.out.println("+---------------------------+");
@@ -58,20 +109,17 @@ public class Main {
         }
     }
 
-    private static void dispenseItem(int index) {
-        if (index < 0 || index >= stock.length) {
+    private void dispenseItem(int index) {
+        if (index < 0 || index >= this.products.length) {
             System.out.println("Invalid option selected, please try again");
 
             return;
         }
 
-        if (stock[index] <= 0) {
-            System.out.printf("Sorry, %s is out of stock%n", products[index]);
+        Product product = products[index];
 
-            return;
+        if(product.dispense()) {
+            balance = balance + product.getPrice();
         }
-
-        stock[index] = stock[index] - 1;
-        balance = balance + prices[index];
     }
 }
