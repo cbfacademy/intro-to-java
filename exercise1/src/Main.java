@@ -1,45 +1,7 @@
 import java.util.Scanner;
 
 public class Main {
-    private class Product{
-        private final String name;
-        private final float price;
-        private int stock;
-
-        public Product(String main, float price) {
-            this(main, price, 10);
-        }
-        public Product(String name, float price, int stock) {
-            this.name = name;
-            this.price = price;
-            this.stock = stock;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public float getPrice() {
-            return this.price;
-        }
-
-        public int getStock() {
-            return this.stock;
-        }
-
-        public boolean dispense() {
-            if (this.stock <= 0) {
-                System.out.printf("Sorry, %s is out of stock%n", this.getName());
-
-                return false;
-            }
-
-            this.stock--;
-
-            return true;
-        }
-    }
-    private final Product[] products = new Product[]{
+    private static final Product[] products = new Product[]{
             new Product("water", 1.0F),
             new Product("sprite", 1.2F),
             new Product("cola", 1.3F),
@@ -47,28 +9,17 @@ public class Main {
             new Product("orange", 1.5F)
     };
     private static float balance = 0;
+    private static Scanner readInput = new Scanner(System.in);
 
     public static void main(String[] args)
     {
-        try
-        {
-            Main app = new Main();
-            app.run();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void run() {
         int selectedItem;
 
         do {
             showContents();
             selectedItem = getUserSelection();
 
-            if (selectedItem != 0) {
+            if (selectedItem > 0) {
                 dispenseItem(selectedItem - 1);
             }
         } while (selectedItem != 0);
@@ -76,7 +27,7 @@ public class Main {
         System.out.printf("Amount to pay: £%.2f", balance);
     }
 
-    public void showContents() {
+    public static void showContents() {
         System.out.println("+---------------------------+");
         System.out.println("|      Vending Machine      |");
         System.out.println("+---------------------------+");
@@ -98,19 +49,19 @@ public class Main {
     }
 
     private static int getUserSelection() {
-        Scanner readInput = new Scanner(System.in);
         System.out.print("Enter a number (0 = Exit): ");
 
         try {
             return readInput.nextInt();
         } catch (Exception e) {
             System.out.println("Please input a number!");
+            readInput = new Scanner(System.in);
             return -1;
         }
     }
 
-    private void dispenseItem(int index) {
-        if (index < 0 || index >= this.products.length) {
+    private static void dispenseItem(int index) {
+        if (index < 0 || index >= products.length) {
             System.out.println("Invalid option selected, please try again");
 
             return;
